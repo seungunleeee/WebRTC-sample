@@ -1,0 +1,15 @@
+[Unit]
+Description=시그널 노드 서버
+Documentation=https://example.com
+After=network.target
+
+[Service]
+# Environment=NODE_PORT=3001
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/SIGNAL_SERVER
+ExecStart=/home/ubuntu/.nvm/versions/node/v18.12.0/bin/node app.js
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
