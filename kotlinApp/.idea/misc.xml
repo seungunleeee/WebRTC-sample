@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/MoonTom/AndroidStudioProjects/Ex_Kotlin_2/211224_WebRTC_Socket_io_1/app/src/main/res/drawable/circle_background.xml" value="0.2375" />
+        <entry key="..\:/Users/MoonTom/AndroidStudioProjects/Ex_Kotlin_2/211224_WebRTC_Socket_io_1/app/src/main/res/drawable/ic_baseline_cameraswitch_24.xml" value="0.2375" />
+        <entry key="..\:/Users/MoonTom/AndroidStudioProjects/Ex_Kotlin_2/211224_WebRTC_Socket_io_1/app/src/main/res/drawable/ic_baseline_hearing_24.xml" value="0.2375" />
+        <entry key="..\:/Users/MoonTom/AndroidStudioProjects/Ex_Kotlin_2/211224_WebRTC_Socket_io_1/app/src/main/res/drawable/ic_baseline_mic_24.xml" value="0.2375" />
+        <entry key="..\:/Users/MoonTom/AndroidStudioProjects/Ex_Kotlin_2/211224_WebRTC_Socket_io_1/app/src/main/res/drawable/ic_baseline_mic_off_24.xml" value="0.2375" />
+        <entry key="..\:/Users/MoonTom/AndroidStudioProjects/Ex_Kotlin_2/211224_WebRTC_Socket_io_1/app/src/main/res/drawable/ic_baseline_speaker_up_24.xml" value="0.2375" />
+        <entry key="..\:/Users/MoonTom/AndroidStudioProjects/Ex_Kotlin_2/211224_WebRTC_Socket_io_1/app/src/main/res/drawable/ic_baseline_videocam_24.xml" value="0.2375" />
+        <entry key="..\:/Users/MoonTom/AndroidStudioProjects/Ex_Kotlin_2/211224_WebRTC_Socket_io_1/app/src/main/res/drawable/ic_baseline_videocam_off_24.xml" value="0.2375" />
+        <entry key="..\:/Users/MoonTom/AndroidStudioProjects/Ex_Kotlin_2/211224_WebRTC_Socket_io_1/app/src/main/res/layout/activity_main.xml" value="0.176" />
+        <entry key="..\:/Users/MoonTom/AndroidStudioProjects/Ex_Kotlin_2/211224_WebRTC_Socket_io_1/app/src/main/res/layout/activity_start.xml" value="0.2" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

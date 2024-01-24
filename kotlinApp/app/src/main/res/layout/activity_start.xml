@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".StartActivity">
+
+    <EditText
+        android:id="@+id/ed_roomName"
+        android:layout_width="343dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="30dp"
+        android:hint="방이름을 입력하세요"
+        app:layout_constraintBottom_toTopOf="@+id/ed_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.666" />
+
+    <EditText
+        android:id="@+id/ed_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="508dp"
+        android:hint="이름을 입력하세요"
+        android:minHeight="48dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/ed_roomName"
+        app:layout_constraintStart_toStartOf="@+id/ed_roomName" />
+
+    <Button
+        android:id="@+id/btn_createRoom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="68dp"
+        android:text="방생성"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ed_name"
+        app:layout_constraintVertical_bias="0.053" />
+
+    <Button
+        android:id="@+id/btn_roomJoin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="92dp"
+        android:text="방입장"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.81"
+        app:layout_constraintStart_toEndOf="@+id/btn_createRoom"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.456" />
+</androidx.constraintlayout.widget.ConstraintLayout>

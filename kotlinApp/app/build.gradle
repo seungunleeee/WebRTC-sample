@@ -1,0 +1,54 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
+
+android {
+    //뷰바인딩
+    buildFeatures {
+        viewBinding true
+    }
+    compileSdk 31
+
+    defaultConfig {
+        applicationId "com.example.a211224_webrtc_socket_io_1"
+        minSdk 26
+        targetSdk 31
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+    //WebRTC
+    implementation 'org.webrtc:google-webrtc:1.0.32006'
+    //Socket.io
+    implementation('io.socket:socket.io-client:2.0.0') { exclude group: 'org.json', module: 'json' }
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.4.0'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    //EasyPermission
+    implementation 'pub.devrel:easypermissions:3.0.0'
+}

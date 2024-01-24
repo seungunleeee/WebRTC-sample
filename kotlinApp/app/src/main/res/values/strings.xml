@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">211224_WebRTC_Socket_io_1</string>
+    <string name="pref_speakerphone_key">speakerphone_preference</string>
+    <string name="pref_speakerphone_default">auto</string>
+</resources>
