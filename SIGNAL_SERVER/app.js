@@ -81,6 +81,7 @@ io.on("connection", (socket) => {
   // 다른 user들에게 offer를 보냄 (자신의 RTCSessionDescription)
   socket.on("offer", (sdp) => {
     // room에는 두 명 밖에 없으므로 broadcast 사용해서 전달
+    console.log("offer 내용 : " + sdp);
     socket.broadcast.emit("getOffer", sdp);
     console.log("offer: 상대방에게 offer 전달완료");
   });
@@ -89,6 +90,7 @@ io.on("connection", (socket) => {
   socket.on("answer", (sdp) => {
     // room에는 두 명 밖에 없으므로 broadcast 사용해서 전달
     // 여러 명 있는 처리는 다음 포스트 1:N에서...
+    console.log("offer response 내용 : " + sdp);
     socket.broadcast.emit("getAnswer", sdp);
     console.log("answer: 상대방에게 answer 전달완료 ");
   });
@@ -97,6 +99,7 @@ io.on("connection", (socket) => {
   socket.on("candidate", (candidate) => {
     // room에는 두 명 밖에 없으므로 broadcast 사용해서 전달
     // 여러 명 있는 처리는 다음 포스트 1:N에서...
+    console.log("candidate 내용 : " + candidate);
     socket.broadcast.emit("getCandidate", candidate);
     console.log("ICE후보 전달완료");
   });
