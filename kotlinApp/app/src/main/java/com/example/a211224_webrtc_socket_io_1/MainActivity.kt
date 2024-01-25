@@ -530,8 +530,14 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     /*Socket.io 연결 관련 */
     private fun connect_Sokcet(): Boolean {
         try {
+            // connection 반복시도 방지 위한 옵션 관련 자료 링크 -> https://velog.io/@tera_geniel/%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9Ckotlin%EC%99%80-nodejs-socket.io%EB%A1%9C-%ED%86%B5%EC%8B%A0%ED%95%98%EA%B8%B0
+            // 현재 코틀린의 socket-io 버전이 2.xx  이에 맞게 signal-server의  버전이 3.xx or 4.xx지정되있는지 확인 필수 (현재 3.xx버전)
+            //이유:  connect 시도를 반복적으로 하는 상황 방지
+
+            val socketOption:Array<String> = arrayOf("websocket") // 옵션 필수
+            val webSocketOptions:IO.Options = IO.Options.builder().setTransports(socketOption).build()
             //클라이언트 소켓 생성
-            mSocket = IO.socket("http://15.164.224.113:5001")
+            mSocket = IO.socket("http://15.164.224.113:5001" , webSocketOptions)
 //            mSocket = IO.socket("http://10.0.2.2:5001")
             //소켓 연결 관련 이벤트
             mSocket?.on(Socket.EVENT_CONNECT, onConnect);
