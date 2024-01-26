@@ -8,6 +8,8 @@ import org.webrtc.SessionDescription;
 class SimpleSdpObserver implements SdpObserver {
 
     String TAG="AppRTC: SDP: ";
+
+
     @Override
     public void onCreateSuccess(SessionDescription sessionDescription) {
         Log.d(TAG, "onCreateSuccess: ");

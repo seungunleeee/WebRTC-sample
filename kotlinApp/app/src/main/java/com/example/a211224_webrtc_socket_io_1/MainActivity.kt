@@ -6,29 +6,26 @@ import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.SyncStateContract
 import android.util.Log
 import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isGone
 import com.example.a211224_webrtc_socket_io_1.databinding.ActivityMainBinding
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import org.webrtc.*
-import java.net.URISyntaxException
-import java.util.*
-import android.widget.Toast
-import androidx.core.view.isGone
-import com.example.a211224_webrtc_socket_io_1.Constants.Companion.isCallEnded
-import org.json.JSONArray
 import org.webrtc.PeerConnection.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
-import java.lang.Exception
-import org.webrtc.EglBase
+import java.net.URISyntaxException
+import java.nio.ByteBuffer
+import java.util.*
 
 
 class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
@@ -36,7 +33,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     object API {
         const val PERMISSION_REQUEST = 2
         val VIDEO_RESOLUTION_WIDTH = 800//800
-        val VIDEO_RESOLUTION_HEIGHT = 600//600
+        val VIDEO_RESOLUTION_HEIGHT = 300//600
         val FPS = 30
     }
 
@@ -62,13 +59,15 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     var audioSource: AudioSource? = null
     var localAudioTrack: AudioTrack? = null
 
+    // 위치 정보 dataChannel
+    var localdataChannel: DataChannel? = null
     //오디오 스위치
     private var isMute = false
 
     //비디오 스위치
     private var isVideoPaused = false
 
-    private var inSpeakerMode = true
+    private var inSpeakerMode = false
 
     /*Socket.io 관련*/
     //클라이언트 소켓
@@ -81,6 +80,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
 
     val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
@@ -122,6 +122,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
             }
             enableVideo(isVideoPaused)
         }
+
         binding.micButton.setOnClickListener {
             if (isMute) {
                 isMute = false
@@ -372,6 +373,8 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         sdpMediaConstraints.mandatory.add(
             MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true")
         )
+//        sdpMediaConstraints.optional.add(
+//            MediaConstraints.KeyValuePair("internalSctpDataChannels", "true"))
 
         //Offer SDP 생성
         peerConnection?.createOffer(object : SimpleSdpObserver() {
@@ -394,6 +397,32 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
 //        AnswerDBListner();
     }
 
+
+
+
+    fun sendToDataChannel(view: View) {
+
+        try {
+
+
+            val sendData = "Hello, World!"
+            val buffer : ByteBuffer = ByteBuffer.wrap(sendData.toByteArray())
+//            localdataChannel!!.send(DataChannel.Buffer(buffer,false)) //.send(DataChannel.Buffer(buffer, false))
+            Log.e(TAG, "DataChanel state :  "+ localdataChannel!!.state())
+            val sendResult =  localdataChannel!!.send(DataChannel.Buffer(buffer,false))
+//            localdataChannel!!.send(buffer)to
+            Log.e(TAG, "sendToDataChannel invoked!! result : "+sendResult.toString())
+
+        }catch (e : Exception){
+            Log.e(TAG, "dataChannel Problem !! : "+e.message)
+            runOnUiThread {
+                Log.i(TAG, "dataChannel Problem !!")
+                Toast.makeText(applicationContext, "dataChannel null 발생"
+                    , Toast.LENGTH_SHORT).show()
+
+            }
+        }
+    }
     //PeerConnectionFactory 초기화
     private fun initializePeerConnectionFactory() {
         val encoderFactory: VideoEncoderFactory
@@ -416,6 +445,44 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
 
     private fun initializePeerConnections() {
         peerConnection = factory?.let { createPeerConnection(it) }
+
+        val dcInit = DataChannel.Init()
+        dcInit.id=1
+        dcInit.negotiated= true
+        dcInit.ordered= true
+        Log.d(TAG,"DC PROTOCAL : "+dcInit.protocol)
+        localdataChannel = peerConnection?.createDataChannel("1", dcInit)
+
+        localdataChannel?.registerObserver(object : DataChannel.Observer {
+            override fun onBufferedAmountChange(previousAmount: Long) {
+                val bufferedAmount = localdataChannel?.bufferedAmount()
+                Log.d(TAG, "DataChannel buffered amount: $bufferedAmount")
+            }
+
+            override fun onStateChange() {
+                val state = localdataChannel?.state()
+                Log.d(TAG, "DataChannel state: $state")
+                if (state == DataChannel.State.OPEN) {
+                    Log.d(TAG, "DataChannel is open!")
+                } else if (state == DataChannel.State.CLOSED) {
+                    Log.d(TAG, "DataChannel is closed!")
+                }
+            }
+            override fun onMessage(buffer: DataChannel.Buffer) {
+                val data = buffer.data
+                val bytes = ByteArray(data.remaining())
+                data.get(bytes);
+                val message = String(bytes);
+                Log.e(TAG, "Datachannel message Received!!")
+                runOnUiThread {
+                    Toast.makeText(
+                        applicationContext,
+                        "Datachannel message Received!!", Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        })
+
     }
 
 
@@ -432,8 +499,8 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
             iceServers.add(iceServer)
         }
 
-
         val rtcConfig = RTCConfiguration(iceServers)
+
 
         val pcObserver: PeerConnection.Observer = object : PeerConnection.Observer {
             override fun onSignalingChange(signalingState: SignalingState) {
@@ -494,7 +561,28 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
             }
 
             override fun onDataChannel(dataChannel: DataChannel) {
-                Log.e(TAG, "onDataChannel: ")
+//                Log.e(TAG, "onDataChannel: Data Channel !!" )
+//
+//                dataChannel.registerObserver(object : DataChannel.Observer{
+//                    override fun onBufferedAmountChange(previousAmount: Long) {
+//                    }
+//
+//                    override fun onStateChange() {
+//                        TODO("Not yet implemented")
+//                    }
+//
+//                    override fun onMessage(buffer: DataChannel.Buffer) {
+//                        val data  = String(buffer.data.array())
+//                        Log.e(TAG , "DataChannel data arrived: ");
+//                        runOnUiThread {
+//                            Log.i(TAG, "DataChannel data arrived")
+//                            Toast.makeText(applicationContext, data
+//                                , Toast.LENGTH_SHORT).show()
+//                        }
+//
+//                    }
+//
+//                })
             }
 
             override fun onRenegotiationNeeded() {
@@ -511,7 +599,9 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         }
 
 //        return factory.createPeerConnection(rtcConfig, pcConstraints, pcObserver);
-        return factory.createPeerConnection(rtcConfig, pcObserver)
+        return  factory.createPeerConnection(rtcConfig, pcObserver)
+
+
     }
 
     fun ConnectionStatus(s: String) {
@@ -581,6 +671,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         mSocket?.on("getAnswer", onGetAnswer)
         //ice후보 받기
         mSocket?.on("getCandidate", onGetCandidate)
+       // mSocket?.on("getDisconnectedPeer" onDisconnectedPeer)
     }
 
 /*소켓 통신을 이벤트 리스너 */
@@ -588,6 +679,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
      * 'all_users'이벤트를 서버에서 보냈을 때 작동
      *  현재 본인이 참여한 방의 객체를 반환(본인제외)
      */
+
 
     private val onAllUsers = Emitter.Listener { args ->
         try {
@@ -614,6 +706,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
             val ar_offerSdp = args[0] as JSONObject
             //Caller의 OfferSDP 등록
             Log.e(TAG, "Caller의 offer_등록완료")
+
             peerConnection!!.setRemoteDescription(
                 SimpleSdpObserver(),
                 SessionDescription(
@@ -691,6 +784,11 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         }
     }
 
+//    private val onDisconnectedPeer = Emitter.Listener { args ->
+//        val  = args[0] as JSONObject
+//
+//    }
+
 
 /* 소켓연결, 종료, 에러 리스너*/
     /**
@@ -712,6 +810,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
                 Log.i(TAG, "diconnected")
                 isConnected = false
                 Toast.makeText(applicationContext, "종료", Toast.LENGTH_SHORT).show()
+
             }
         }
 
